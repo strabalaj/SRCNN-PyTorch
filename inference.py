@@ -20,6 +20,7 @@ import torch
 import config
 import imgproc
 from model import SRCNN
+from image_helper import load_image_sanitize
 
 
 def main(args):
@@ -37,14 +38,7 @@ def main(args):
     model.eval()
 
     # Read LR image and HR image
-    lr_image = cv2.imread(args.inputs_path, cv2.IMREAD_UNCHANGED)
-
-    # Convert 4-channel image (e.g. BGRA) to 3-channel BGR
-    if lr_image.shape[2] == 4:
-        lr_image = cv2.cvtColor(lr_image, cv2.COLOR_BGRA2BGR)
-
-    # Normalize to [0, 1] float32
-    lr_image = lr_image.astype(np.float32) / 255.0
+    lr_image = load_image_sanitize(args.inputs_path).astype(np.float32) / 255.0
 
     # Get Y channel image data
     lr_y_image = imgproc.bgr2ycbcr(lr_image, True)

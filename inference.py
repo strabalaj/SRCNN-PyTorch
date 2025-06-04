@@ -45,7 +45,7 @@ def main(args):
 
     # Normalize to [0, 1] float32
     lr_image = lr_image.astype(np.float32) / 255.0
-    
+
     # Get Y channel image data
     lr_y_image = imgproc.bgr2ycbcr(lr_image, True)
 
@@ -68,7 +68,9 @@ def main(args):
     sr_y_image = sr_y_image.astype(np.float32) / 255.0
     sr_ycbcr_image = cv2.merge([sr_y_image, lr_cb_image, lr_cr_image])
     sr_image = imgproc.ycbcr2bgr(sr_ycbcr_image)
-    cv2.imwrite(args.output_path, sr_image * 255.0)
+    sr_image_uint8 = np.clip(sr_image * 255.0, 0, 255).astype(np.uint8)
+    cv2.imwrite(args.output_path, sr_image_uint8)
+
 
     print(f"SR image save to `{args.output_path}`")
 
